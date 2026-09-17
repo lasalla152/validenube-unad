@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Limpiando datos...</title>
+</head>
+<body>
+    <h1>Limpiando base de datos...</h1>
+    <script type="module">
+        import { database, ref, set } from './firebase-config.js';
+        
+        set(ref(database, 'users'), null).then(() => {
+            alert("✅ Todos los registros han sido eliminados correctamente.");
+            window.location.href = 'asrec.html';
+        }).catch((error) => {
+            alert("❌ Error al borrar: " + error.message);
+            window.location.href = 'asrec.html';
+        });
+    </script>
+</body>
+</html>

